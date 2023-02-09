@@ -7,9 +7,16 @@ let getHomepage = (req, res) => {
     connection.query(
         'SELECT * FROM `user`',
         function (err, results, fields) {
-            console.log(results); // results contains rows returned by server
-            data = results;
-            return res.render('index.ejs', { dataUser: JSON.stringify(data) });
+            results.map((row) => {
+                data.push({
+                    id: row.id,
+                    firstName: row.firstName,
+                    lastName: row.lastName,
+                    email: row.email,
+                    address: row.address
+                })
+            })
+            return res.render('index.ejs', { dataUser: data });
         }
 
     );
