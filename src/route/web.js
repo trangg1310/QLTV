@@ -6,6 +6,8 @@ let router = express.Router();
 const initWebRoute = (app) => {
     router.get('/', homeController.getHomepage);
 
+    router.get('/details/user/:userId', homeController.getDetailPage);
+
     router.get('/about', (req, res) => {
         res.send(`I'm zau!`);
     })
