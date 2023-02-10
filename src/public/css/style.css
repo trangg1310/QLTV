@@ -39,3 +39,15 @@ img {
     background-color: #04AA6D;
     color: white;
 }
+
+.create-user {
+    padding: 16px;
+}
+
+.create-user label {
+    display: block;
+}
+
+.create-user .btn {
+    margin-top: 15px;
+}
