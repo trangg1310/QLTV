@@ -57,8 +57,14 @@
                             <td>
                                 <button type="button" class="btn btn-light"><a
                                         href="/details/user/<%=dataUser[i].id%>">Detail</a></button>
-                                <button type="button" class="btn btn-light">Edit</button>
-                                <button type="button" class="btn btn-light">Delete</button>
+                                <form action="/edit-user/<%=dataUser[i].id%>" method="get">
+                                    <button type="submit" class="btn btn-light">Edit</button>
+                                </form>
+
+                                <form action="/delete-user" method="POST">
+                                    <input type="text" hidden value="<%=dataUser[i].id%>" name="userId" />
+                                    <button type="submit" class="btn btn-light">Delete</button>
+                                </form>
                             </td>
 
                         </tr>
