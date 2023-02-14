@@ -7,7 +7,7 @@ console.log("Creating connection pool...")
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    database: 'nodejsbasic'
+    database: 'qltv'
 });
 
 
