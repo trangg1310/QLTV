@@ -5,21 +5,18 @@ import pool from "../config/connectDB";
 const bcrypt = require('bcrypt');
 
 function initialize(passport) {
-
+    //console.log(passport);
     const authenticateUser = (email, password, done) => {
-        pool.query(
-            `SELECT * FROM user WHERE email = $1`,
-            [email],
-            (err, results) => {
-                if (err) {
-                    throw err;
-                }
+        console.log(email)
+         let results = pool.execute(
+            `SELECT * FROM user WHERE email = ?`,
+            [email])
 
-                // console.log(results.rows);
+                console.log(results.rows);
 
-                if (results.rows.length > 0) {
-                    const user = results.rows[0];
-
+                if (results[0].length > 0) {
+                    const user = results[0];
+                    console.log(user);
                     bcrypt.compare(password, user.password, (err, isMatch) => {
                         if (err) {
                             throw err;
@@ -34,8 +31,7 @@ function initialize(passport) {
                     return done(null, false, { message: "Tài khoản chưa được đăng ký" });
                 }
             }
-        )
-    }
+    //console.log(authenticateUser)
 
     passport.use(
         new LocalStrategy(
@@ -47,20 +43,15 @@ function initialize(passport) {
         )
     );
 
-    passport.serializeUser((user, done) => done(null, user.id_user));
+    passport.serializeUser((user, done) => done(null, user.idUser));
 
     passport.deserializeUser((id, done) => {
-        pool.query(
-            `SELECT * FROM user WHERE idUser = $1`,
-            [id],
-            (err, results) => {
-                if (err) {
-                    throw err;
-                }
-                return done(null, results.rows[0]);
-            }
-        )
+        let results = pool.execute(
+            `SELECT * FROM user WHERE idUser = ?`)
+                return done(null, results[0]);
+        
     })
+
 }
 
 module.exports = initialize;

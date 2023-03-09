@@ -1,0 +1,144 @@
+<%- include ('header.ejs') %>
+<style>
+    body {
+        /* padding-top: 0; */
+        padding-bottom: 0;
+    }
+    #img1{
+        width: 100px;
+    }
+    #span1,#span2, #span3{
+        width: 4.5cm;
+    }
+    .container {
+        margin-top: 50px;
+    }
+
+    .alert {
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+</style>
+</header>
+<body>
+    <header class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">
+          Library
+        </a>
+        <div class="navbar-nav">
+            <div class="nav-item active">
+                <a class="nav-link " href="#">Tài Khoản</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/history">Lịch sử</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/rent">Thuê Sách</a>
+            </div>
+            <div class="nav-item text-nowrap">
+                    <a class="nav-link px-3" href="/user/logout">
+                    Đăng xuất
+                    <i class="fas fa-sign-out-alt"></i>
+                    </a>
+            </div>
+        </div>
+    </header>
+
+    <div>
+        <% if (typeof errors != 'undefined'){
+            %> <% errors.forEach(element =>
+            {%> <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= element.message%>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% }) %>
+        <% } %>
+    </div>
+
+    <div>
+        <% if (messages.success_msg) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+            </div>
+        <% } %>   
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <form action="/user/infor" method="post" >
+                <input type="hidden" name="email" id="email" value="<%= user.email %>" required>
+                
+                <div class="input-group">
+                    <span style="width:3cm"class="input-group-text span span-primary">Họ và tên</span>
+                    <input class="form-control border " type="text" name="name" id="name" value="<%= user.name %>" required>
+                    </div>
+                
+                <div class="input-group">
+                    <span style="width:3cm" class="input-group-text">Số điện thoại</span>
+                    <input class="form-control" type="text" name="phoneNumber" id="phoneNumber" value="<%= user.phoneNumber %>" required>
+                    </div>
+                
+                <div class="input-group">
+                    <span style="width:3cm" class="input-group-text">Địa chỉ</span>
+                    <input class="form-control" type="text" name="address" id="address" value="<%= user.address %>" required>
+                    </div>
+                
+                <div class="input-group">
+                    <span style="width:3cm"class="input-group-text">CMND/CCCD</span>
+                    <input class="form-control" type="text" name="cmnd" id="cmnd" value="<%= user.cmnd %>" required>
+                    </div>
+                
+                <div class="input-group">
+                    <span style="width:3cm" class="input-group-text">Giới tính</span>
+                    <input class="form-control" type="text" name="gender" id="gender" value="<%= user.gender%>" required>
+                </div>
+                <br>
+                <button type="submit" class="d-grid gap-2 col-2 mx-auto btn btn-primary">Lưu</button>
+            </form>
+            
+        </div>
+    </div>  
+    
+    <hr>
+    <button type="submit" class=" d-grid gap-2 col-lg-4 mx-auto btn btn-danger " style="margin-left: 10%;" onclick="toggleDiv('pass')">Thay đổi mật khẩu</button>
+    
+    <div class="container col-lg-6 col-sm-12" style="display:none"  id="pass">
+        <div class="row">
+            <form  action = "user/infor/password" style="margin-top: 0.5cm;" method="post">
+                <input type="hidden" name="email" id="email" value="<%= user.email %>" required>
+                <div class="input-group">
+                    <span id="span1" class="input-group-text">Nhập mật khẩu cũ</span>
+                    <input type="password" class="form-control border " name="password" id="password" required>
+                </div>
+                <div class="input-group">
+                    <span id="span2" class="input-group-text">Nhập mật khẩu mới</span>
+                    <input type="password" class="form-control border " name="password1" id="password1" required>
+                </div>
+                <div class="input-group" style="margin-bottom: 0.5cm;">
+                    <span id="span3" class="input-group-text">Lưu mật khẩu mới</span>
+                    <input type="password" class="form-control border " name="password2" id="password2" required>
+                </div>
+                <button type="submit" class=" d-grid gap-2 col-2 mx-auto btn btn-primary ">Lưu</button>
+            </form> 
+            
+        </div>
+    </div>
+    <br>
+<script type="text/javascript">
+        // function showDiv(toggle){
+        //     document.getElementById(toggle).style.display = 'block';}
+        // function hideDiv(toggle){
+        //     document.getElementById(toggle).style.display = 'none';
+        // }
+        function toggleDiv(toggle){
+            var x = document.getElementById(toggle);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+</script>
+</body>
+
+

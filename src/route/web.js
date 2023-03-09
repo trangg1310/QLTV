@@ -1,6 +1,6 @@
 import express from "express";
-import homeController, { getHomepage } from "../controller/homeController";
 import userController from "../controller/userController";
+import adminController from "../controller/adminController";
 
 let router = express.Router();
 
@@ -9,10 +9,22 @@ const initWebRoute = (app) => {
     router.get('/login', userController.getLogin);
     router.post('/login', userController.postLogin);
 
-    router.get('/logout', userController.getLogout);
-
     router.get('/register', userController.getRegister);
-    router.post('/register', userController.postRegister)
+    router.post('/register', userController.postRegister);
+
+    router.get('/user', userController.getUserPage);
+    router.get('/user/logout', userController.getLogout);
+    router.post('/user/infor', userController.postInfor);
+    router.post('/user/infor/password', userController.postPassword);
+
+    router.get('/user/history', userController.getHistory);
+    router.get('/user/rent', userController.getMuonSach);
+
+
+    router.get('/admin', adminController.getAdminPage);
+    router.get('/admin/book', adminController.getAdminBook);
+    router.post('/admin/themsach', adminController.createBook);
+    router.post('/admin/book', adminController.postBook);
 
     // router.get('/details/user/:userId', homeController.getDetailPage);
 

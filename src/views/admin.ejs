@@ -1,0 +1,84 @@
+<%- include('header.ejs') %> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+        html {
+          scroll-behavior: smooth;
+        }
+        body {
+            display: block;
+        }
+
+        .admin-subcontent {
+            height:500px;
+            overflow-x:auto;
+            overflow-y:auto;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+        header {
+          background-color: white;
+        }
+
+        header a {
+          color: #404386 !important;
+        }
+
+        header img {
+          width: 30px;
+        }
+
+        #sidebarMenu.nav-link {
+          color: white !important; 
+        };
+    </style>
+</header>
+<body>
+
+  <header class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">
+      Library
+    </a>
+    <div class="navbar-nav">
+        <div class="nav-item active">
+            <a class="nav-link " href="#">Tài Khoản</a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-link" href="/admin/book">Quản lý sách</a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-link" href="/admin/user">Quản lý người dùng</a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" href="/admin/rent">Quản lý mượn trả</a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" href="/admin/tke">Thống kê</a>
+        </div>
+        <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" href="/admin/logout">
+                Đăng xuất
+                <i class="fas fa-sign-out-alt"></i>
+                </a>
+        </div>
+    </div>
+   
+</body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
