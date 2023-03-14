@@ -18,13 +18,19 @@ const initWebRoute = (app) => {
     router.post('/user/infor/password', userController.postPassword);
 
     router.get('/user/history', userController.getHistory);
-    router.get('/user/rent', userController.getMuonSach);
-
+    router.get('/user/book', userController.getMuonSach);
+    router.get('/user/rent', userController.getPhieuMuon);
+    router.post('/user/rent', userController.createGioHang);
+    router.post('/user/phieumuon', userController.delGioHang);
+    router.post('/user/createphieumuon', userController.createPhieuMuon);
+    router.get('/user/book/search', userController.searchBook)
 
     router.get('/admin', adminController.getAdminPage);
     router.get('/admin/book', adminController.getAdminBook);
     router.post('/admin/themsach', adminController.createBook);
     router.post('/admin/book', adminController.postBook);
+    router.get('/admin/user', adminController.getAdminUser);
+    router.get('/admin/logout', adminController.logOut);
 
     // router.get('/details/user/:userId', homeController.getDetailPage);
 

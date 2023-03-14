@@ -1,0 +1,141 @@
+<%- include('header') %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+<style>
+body {
+  display: block;
+}
+.container {
+    margin-top: 40px;
+}
+.body {
+    display: block;
+}
+.logo {
+    max-width: 200px;
+}
+.brand-name {
+    margin: 5%;
+    max-width: 200px;
+}
+
+.card {
+  background-color: white;
+  padding: 30px;
+  margin-top: 30px;
+}
+#card-body input{
+        text-align: center;
+        border-color: none;
+        background-color: transparent !important;
+}
+
+th, td {
+        text-align: center;
+}
+
+input{
+        height: 1.1cm;
+}
+</style>
+
+</head>
+<body>
+    <header class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">
+          Library
+        </a>
+        <div class="navbar-nav">
+            <div class="nav-item">
+                <a class="nav-link " href="#">Tài Khoản</a>
+            </div>
+            <div class="nav-item active">
+                <a class="nav-link" href="/user/history">Lịch sử</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/book">Thuê Sách</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/rent">Phiếu mượn</a>
+            </div>
+            <div class="nav-item text-nowrap">
+                    <a class="nav-link px-3" href="/user/logout">
+                    Đăng xuất
+                    <i class="fas fa-sign-out-alt"></i>
+                    </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+      <div>
+        <% if (typeof errors != 'undefined'){
+            %> <% errors.forEach(element =>
+            {%> <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= element.message%>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% }) %>
+        <% } %>
+    </div>
+
+    <div>
+        <% if (messages.success_msg) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+            </div>
+        <% } %>   
+    </div>
+        <div class="row">
+            <div class="col col-8">
+              <% if (book.length === 0) { %>
+                <div class="card">
+                  <div class="card-body">
+                    <h1 style="color:#007bff">Không có quyển sách nào trong giỏ hàng</h1>
+                  </div>
+                </div>
+              <% } else { %>
+                <% for( let index = book.length - 1; index >= 0; index--) { %>
+                  <div class="card">
+                    <div class="card-body">
+                        <form action="/user/phieumuon" method="post">
+                            <h2 style="color:#007bff"><input type="text" id="tenSach" name="tenSach" value="<%= book[index].tenSach %>" hidden><%= book[index].tenSach %></h1>
+                            <p>Tên tác giả: <input type="text" id="tenTG" name="tenTG" value="<%= book[index].tenTG %>" hidden><%= book[index].tenTG %>
+                                <br>Thể loại: <input type="text" id="theLoai" name="theLoai" value="<%= book[index].theLoai %>" hidden><%= book[index].theLoai %></p>
+                            <p>Nhà xuất bản: <input type="text" id="NXB" name="NXB" value="<%= book[index].NXB %>" hidden><%= book[index].NXB %>
+                                <br>Năm xuất bản: <input type="text" id="namXB" name="namXB" value="<%= book[index].namXB %>" hidden><%= book[index].namXB %></p>
+                            <p>ID sách: <input type="text" id="idSach" name="idSach" value="<%= book[index].idSach %>" hidden><%= book[index].idSach %>
+                                <br>Vị trí: <input type="text" id="viTri" name="viTri" value="<%= book[index].viTri %>" hidden><%= book[index].viTri %> </p>
+                            <h6>Giá bìa: <input type="text" id="giaBia" name="giaBia" value="<%= book[index].giaBia %>" hidden><%= book[index].giaBia %> VNĐ</h3>
+                            <button class="btn-md btn btn-outline-secondary" type="submit">Xóa khỏi giỏ hàng</button>
+                        </form>
+                    </div>
+                  </div>
+                <% } %>
+              <% } %>
+            </div>
+
+            <div class="col col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/user/createphieumuon" method="post">
+                            <div class="mb-3 mt-3">
+                                <label for="ngayMuon" class="form-label">Ngày mượn</label>
+                                <input type="date" id="ngayMuon" name="ngayMuon" onchange="">
+                                
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label for="ngayHenTra" class="form-label">Ngày hẹn trả</label>
+                                <input type="date" id="ngayHenTra" name="ngayHenTra" onchange="">
+                                
+                            </div>
+                            <button class="btn-md btn btn-primary" type="submit">Mượn sách</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+          </div>
+  </div>
+
+</body>

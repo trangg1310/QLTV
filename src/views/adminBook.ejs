@@ -138,17 +138,11 @@
                                                     <td>
                                                         <select name="trangThai" style="background-color: transparent; border: none; padding: 8px 0px;" id="trangThai">
                                                             <% if (book[index].trangThai === "available") { %>
-                                                                <option value="available" selected>available</option>
-                                                                <option value="pending">pending</option>
-                                                                <option value="active">active</option>
-                                                            <% } else if (book[index].trangThai === "pending") {%>
-                                                                <option value="available">available</option>
-                                                                <option value="pending" selected>pending</option>
-                                                                <option value="active">active</option>
+                                                                <option value="available" selected>Không thể mượn</option>
+                                                                <option value="active">Có thể mượn</option>
                                                             <% } else if (book[index].trangThai === "active") { %>
-                                                                <option value="available">available</option>
-                                                                <option value="pending">pending</option>
-                                                                <option value="active" selected>active</option>
+                                                                <option value="available">Không thể mượn</option>
+                                                                <option value="active" selected>Có thể mượn</option>
                                                             <% } %>
                                                         </select>
                                                     </td>

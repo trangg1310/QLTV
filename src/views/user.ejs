@@ -33,7 +33,10 @@
                 <a class="nav-link" href="/user/history">Lịch sử</a>
             </div>
             <div class="nav-item">
-                <a class="nav-link" href="/user/rent">Thuê Sách</a>
+                <a class="nav-link" href="/user/book">Thuê Sách</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/rent">Phiếu mượn</a>
             </div>
             <div class="nav-item text-nowrap">
                     <a class="nav-link px-3" href="/user/logout">
@@ -44,26 +47,25 @@
         </div>
     </header>
 
-    <div>
-        <% if (typeof errors != 'undefined'){
-            %> <% errors.forEach(element =>
-            {%> <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= element.message%>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <% }) %>
-        <% } %>
-    </div>
-
-    <div>
-        <% if (messages.success_msg) { %>
-            <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-
-            </div>
-        <% } %>   
-    </div>
-
     <div class="container">
+        <div>
+            <% if (typeof errors != 'undefined'){
+                %> <% errors.forEach(element =>
+                {%> <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= element.message%>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% }) %>
+            <% } %>
+        </div>
+    
+        <div>
+            <% if (messages.success_msg) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    
+                </div>
+            <% } %>   
+        </div>
         <div class="row">
             <form action="/user/infor" method="post" >
                 <input type="hidden" name="email" id="email" value="<%= user.email %>" required>

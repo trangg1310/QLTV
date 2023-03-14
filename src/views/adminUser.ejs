@@ -1,0 +1,160 @@
+<%- include('header.ejs') %> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+        html {
+          scroll-behavior: smooth;
+        }
+        body {
+            display: block;
+        }
+
+        .admin-subcontent {
+            height:500px;
+            overflow-x:auto;
+            overflow-y:auto;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+        header {
+          background-color: white;
+        }
+
+        header a {
+          color: #404386 !important;
+        }
+
+        header img {
+          width: 30px;
+        }
+
+        #sidebarMenu.nav-link {
+          color: white !important; 
+        };
+
+        input{
+        border-radius: 5px;
+        height: 1.1cm;
+        }
+
+        #themsach input {
+            margin-bottom: 1rem;
+        }
+        th, td {
+        text-align: center;
+        }
+
+        #sach input{
+        text-align: center;
+        border-color: transparent;
+        background-color: transparent !important;
+        }
+    </style>
+</header>
+<body>
+
+    <header class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">
+        Library
+        </a>
+        <div class="navbar-nav">
+            <div class="nav-item active">
+                <a class="nav-link " href="/admin">Tài Khoản</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/admin/book">Quản lý sách</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/admin/user">Quản lý người dùng</a>
+            </div>
+            <div class="nav-item">
+            <a class="nav-link" href="/admin/rent">Quản lý mượn trả</a>
+            </div>
+            <div class="nav-item">
+            <a class="nav-link" href="/admin/tke">Thống kê</a>
+            </div>
+            <div class="nav-item text-nowrap">
+                    <a class="nav-link px-3" href="/admin/logout">
+                    Đăng xuất
+                    <i class="fas fa-sign-out-alt"></i>
+                    </a>
+            </div>
+        </div>
+    </header>
+
+        <!-- Danh sách user -->
+        <div class="col-12 mb-4" id="sach" style="margin-top: 30px;">
+            <div class="card shadow">
+                <div class="card-header">
+                    Danh sách người dùng
+                </div>
+                <div class="card-body">
+                    <div class="baixe admin-content">
+                        <% if (user.length === 0) { %>
+                            <p>Không có người dùng nào</p>
+                        <% } else { %>
+                            <div class="admin-subcontent table-responsive">
+                                <table class="table table-striped table-sm" id="table-bai-xe">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID user</th>
+                                            <th scope="col">Tên người dùng</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Địa chỉ</th>
+                                            <th scope="col">Số điện thoại</th>
+                                            <th scope="col">Giới tính</th>
+                                            <th scope="col">CMND</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for( let index = 0; index < user.length; index++ ) { %>
+                                            <tr>
+                                                <form action="/admin/user" method="post">
+                                                    <td><input type="text" id="idUser" name="idUser" style="width:90%"value="<%= user[index].idUser %>"></td>
+                                                    <td><input type="text" id="name" name="name" class="form-control" style="width:max-content"value="<%= user[index].name %>" ></td>
+                                                    <td><input type="text" id="email" name="email" class="form-control" style="width:max-content" value="<%= user[index].email %>"></td>
+                                                    <td><input type="text" id="address" name="address"class="form-control"style="width:max-content" value="<%= user[index].address %>"></td>
+                                                    <td><input type="text" id="phoneNumber" name="phoneNumber" class="form-control" style="width:max-content"value="<%= user[index].phoneNumber %>" ></td>
+                                                    <!-- <td><input type="text" id="gender"  name="gender" class="form-control" value="<%= user[index].gender %>"></td> -->
+                                                    <td>
+                                                        <select name="gender" style="background-color: transparent; border: none; padding: 8px 0px;" id="gender">
+                                                            <% if (user[index].gender === "Nam") { %>
+                                                                <option value="Nam" selected>Nam</option>
+                                                                <option value="Nữ">Nữ</option>
+                                                            <% } else if (user[index].gender === "Nữ") {%>
+                                                                <option value="Nam">Nam</option>
+                                                                <option value="Nữ" selected>Nữ</option>
+                                                            <% } %>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text" id="cmnd" style="width:max-content"name="cmnd" class="form-control" value="<%= user[index].cmnd %>"></td>
+                                                    <td><button type="submit" name="action" class="btn btn-primary" class="form-control" value="update"><span class="text-gradient"><i class="fas fa-pencil-alt"></i></span></button></td>
+                                                    <td><button type="submit" name="action" class="btn btn-danger" class="form-control" value="delete"><span class="text-gradient"><i class="fas fa-times"></i></span></button></td>
+                                                </form>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

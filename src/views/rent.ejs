@@ -1,0 +1,148 @@
+<%- include('header') %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+<style>
+body {
+  display: block;
+}
+.container {
+    margin-top: 40px;
+}
+.body {
+    display: block;
+}
+.logo {
+    max-width: 200px;
+}
+.brand-name {
+    margin: 5%;
+    max-width: 200px;
+}
+
+.card {
+  background-color: white;
+  padding: 30px;
+  margin-top: 30px;
+}
+#sach input{
+        text-align: center;
+        border-color: transparent;
+        background-color: transparent !important;
+}
+
+th, td {
+        text-align: center;
+}
+
+input{
+        height: 1.1cm;
+}
+</style>
+
+</head>
+<body>
+    <header class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">
+          Library
+        </a>
+        <div class="navbar-nav">
+            <div class="nav-item">
+                <a class="nav-link " href="#">Tài Khoản</a>
+            </div>
+            <div class="nav-item active">
+                <a class="nav-link" href="/user/history">Lịch sử</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/book">Thuê Sách</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="/user/rent">Phiếu mượn</a>
+            </div>
+            <div class="nav-item text-nowrap">
+                    <a class="nav-link px-3" href="/user/logout">
+                    Đăng xuất
+                    <i class="fas fa-sign-out-alt"></i>
+                    </a>
+            </div>
+        </div>
+    </header>
+
+
+
+    <div class="col-12 mb-4" id="sach" style="margin-top: 30px;">
+        <% if (messages.success_msg) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %> 
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
+          <% if (messages.error) { %>
+              <div class="alert alert-danger alert-dismissible fade show" role="alert"><%= messages.error %> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+          <% } %>
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row"> 
+                    <div class="col col-4">
+                        Danh sách sách
+                    </div>
+                    <form class="d-flex col col-8" action="/user/book/search" method="get">
+                        <input class="form-control me-2" type="text" placeholder="Search" name="book">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="baixe admin-content">
+                    <% if (book.length === 0) { %>
+                        <p>Không có quyển sách nào</p>
+                    <% } else { %>
+                        <div class="admin-subcontent table-responsive">
+                            <table class="table table-borderless table-sm" id="table-bai-xe">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID sách</th>
+                                        <th scope="col">Vị Trí</th>
+                                        <th scope="col">Tên sách</th>
+                                        <th scope="col">Tên tác giả</th>
+                                        <th scope="col">NXB</th>
+                                        <th scope="col">Năm XB</th>
+                                        <th scope="col">Thể loại</th>
+                                        <th scope="col">Tình trạng</th>
+                                        <th scope="col">Giá bìa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for( let index = 0; index < book.length; index++ ) { %>
+                                        <tr>
+                                            <form action="/user/rent" method="post">
+                                                <td><input type="text" id="idSach" name="idSach" style="width:90%"value="<%= book[index].idSach %>"></td>
+                                                <td><input type="text" id="viTri" name="viTri" style="width:90%"value="<%= book[index].viTri %>" ></td>
+                                                <td><input type="text" id="tenSach" name="tenSach" style="width:max-content" value="<%= book[index].tenSach %>"></td>
+                                                <td><input type="text" id="tenTG" name="tenTG" style="width:max-content" value="<%= book[index].tenTG %>"></td>
+                                                <td><input type="text" id="NXB" name="NXB" style="width:max-content"value="<%= book[index].NXB %>" ></td>
+                                                <td><input type="text" id="namXB"  name="namXB" style="width:90%" value="<%= book[index].namXB %>"></td>
+                                                <td><input type="text" id="theLoai" style="width:max-content"name="theLoai" value="<%= book[index].theLoai %>"></td>
+                                                <% if(book[index].trangThai === "available") {%>
+                                                <td><input type="text" id="trangThai" name="trangThai" value="Không thể mượn"></td>
+                                                <% } else %>
+                                                <% if(book[index].trangThai === "active") {%>
+                                                    <td><input type="text" id="trangThai" name="trangThai" value="Có thể mượn"></td>
+                                                <% } %>
+                                                <td><input type="text" id="giaBia" name="giaBia"  value="<%= book[index].giaBia %>"></td>
+                                                <td><button type="submit" class="btn btn-primary" class="form-control"><span class="text-gradient"><i class="fas fa-pencil-alt"></i></span></button></td>
+                                            </form>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>

@@ -1,5 +1,6 @@
 import pool from "../config/connectDB";
 import bcrypt from "bcrypt";
+import moment from "moment/moment";
 
 
 const user = {
@@ -56,6 +57,7 @@ let postLogin = async(req, res) => {
             var sess = req.session;
             sess.dalogin= true;
             sess.email=user[0].email;
+            sess.giohang = [];
             console.log(sess.email);
             if(sess.email == process.env.EMAIL_ADMIN) {
                 return res.redirect('/admin');
@@ -204,11 +206,118 @@ let postPassword = async(req, res) => {
 }
 
 let getHistory = async(req, res) => {
-    return res.render('history.ejs');
+    if(req.session.dalogin==true && req.session.email !== process.env.EMAIL_ADMIN) {
+        let [idUser, fields1] = await pool.execute(`select idUser from user where email=?`, [req.session.email]);
+        let [history, fields] = await pool.execute(`SELECT book.tenSach,book.idSach,book.viTri, book.tenTG, book.NXB, book.namXB, book.theLoai, 
+        chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet
+        FROM book, chitietphieumuon, phieumuon
+        WHERE book.idSach = chitietphieumuon.idSach
+        AND chitietphieumuon.idPhieuMuon = phieumuon.idPhieuMuon
+        AND phieumuon.idUser = ?`, [idUser[0].idUser]);
+        return res.render('history.ejs', {history: history});
+    } else {
+        return res.redirect('/login');
+    }
+    
 }
 
 let getMuonSach = async(req, res) => {
-    return res.render('rent.ejs');
+    if(req.session.dalogin==true && req.session.email !== process.env.EMAIL_ADMIN) {
+        let [book, fields] = await pool.query(`select * from book`);
+        return res.render('rent.ejs', {book: book});
+    } else {
+        return res.redirect('/login');
+    }
+}
+
+let getPhieuMuon = async(req, res) => {
+    if(req.session.dalogin==true && req.session.email !== process.env.EMAIL_ADMIN) {
+        return res.render('phieumuon.ejs', {book: req.session.giohang, errors: errors});
+    } else {
+        return res.redirect('/login');
+    }
+}
+
+let createGioHang = async(req, res) => {
+    let x = req.session.giohang.length;
+    for(let index = 0; index<x; index++) {
+        if(req.session.giohang[index].idSach===req.body.idSach) {
+            req.flash('error', "Sách đã có trong phiếu mượn.");
+            return res.redirect('/user/book');            
+        }
+    }
+    if(req.body.trangThai==='Không thể mượn') {
+        req.flash('error', "Sách đang trong tình trạng không thể mượn.");
+        return res.redirect('/user/book');    
+    }
+    req.session.giohang[x] = req.body;
+    req.flash('success_msg', "Thêm sách vào phiếu mượn thành công.")
+    return res.redirect('/user/book');
+}
+
+let delGioHang = async(req, res) => {
+    errors = [];
+    let removeIndex = req.session.giohang.findIndex( item => item.idSach === req.body.idSach);
+    req.session.giohang.splice(removeIndex, 1);
+    console.log(req.session.giohang);
+    res.redirect('/user/rent')
+}
+
+let createPhieuMuon = async(req, res) => {
+    console.log(req.body);
+    let soLuong = 0;
+    let tienCoc = 5000;
+    errors = [];
+    for(let index = 0; index< req.session.giohang.length; index++) {
+        soLuong++;
+        tienCoc+=5000;
+    }
+    let ngayMuon = req.body.ngayMuon;
+    let ngayHenTra = req.body.ngayHenTra;
+    let tmpNgayMuon = new Date(ngayMuon);
+    let tmpNgayHenTra = new Date(ngayHenTra);
+    let curTime = new Date();
+    if(soLuong==0) {
+        //req.flash('error', "Không có quyển sách nào trong giỏ hàng!");
+        errors.push({message: "Không có quyển sách nào trong giỏ hàng!"})
+    } else
+    if(req.body.ngayMuon=='' || req.body.ngayHenTra=='') {
+        //req.flash('error', "Bạn chưa điền thời gian mượn/trả!");
+        errors.push({message: "Bạn chưa điền thời gian mượn/trả!"})
+    } else
+    if(tmpNgayMuon > tmpNgayHenTra) {
+        //req.flash("Ngày mượn phải trước ngày hẹn trả!");
+        errors.push({message: "Ngày mượn phải trước ngày hẹn trả!"})
+    } else 
+    if(curTime> tmpNgayMuon) {
+        errors.push({message: "Ngày mượn không thể trước ngày hôm nay!"});
+    }
+    if(errors.length>0) {
+        res.redirect('/user/rent');
+    } else {
+        let [idUser, fields] = await pool.execute(`select idUser from user where email=?`, [req.session.email]);
+        console.log(idUser);
+        //let curTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        let curTimeString = moment(new Date().toLocaleString(), "MM/DD/YYYY HH:mm:ss a").format("YYYY-MM-DD HH:mm:ss");
+        await pool.execute(`insert into phieumuon (idUser, soLuong, ngayMuon, ngayHenTra, tienCoc, timeCreate) values (?,?,?,?,?,?)`,
+        [idUser[0].idUser,soLuong,ngayMuon,ngayHenTra,tienCoc, curTimeString]);
+        let [idPhieuMuon, tmp] = await pool.execute(`select idPhieuMuon from phieumuon where idUser=? and timeCreate=?`,
+        [idUser[0].idUser, curTimeString]);
+        for(let index = 0; index<req.session.giohang.length; index++) {
+            await pool.execute(`insert into chitietphieumuon (idPhieuMuon, idSach, trangThai) values (?,?,?)`, [idPhieuMuon[0].idPhieuMuon, req.session.giohang[index].idSach, "Chưa trả"]);
+            await pool.execute(`update book set trangThai =? where idSach=?`, ["available", req.session.giohang[index].idSach]);
+        }
+        req.session.giohang=[];
+        req.flash('success_msg',"Đặt đơn mượn sách thành công!");
+        res.redirect('/user/rent');
+    }
+}
+let searchBook = async(req, res) => {
+    console.log(req.query);
+    let sql = "SELECT * from book where tenSach LIKE '%"+req.query.book+"%' OR tenSach LIKE '"+req.query.book+"%' OR tenSach LIKE '%"+req.query.book+"'";
+    console.log(sql);
+    let [book, fields] = await pool.execute(sql);
+    return res.render('rent.ejs', {book: book})
 }
 module.exports = {
     getLogin,
@@ -221,5 +330,10 @@ module.exports = {
     postInfor,
     postPassword,
     getHistory,
-    getMuonSach
+    getMuonSach,
+    getPhieuMuon,
+    createGioHang,
+    delGioHang,
+    createPhieuMuon,
+    searchBook
 }
