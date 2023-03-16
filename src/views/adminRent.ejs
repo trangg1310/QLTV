@@ -103,9 +103,35 @@
 </nav>
    
 <div class="col-12 mb-4" id="sach" style="margin-top: 30px;">
+  <% if (messages.success_msg) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %> 
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+  
+  <% if (messages.error) { %>
+      <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= messages.error %> 
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+  <% } %>
   <div class="card shadow">
-      <div class="card-header">
-          Quản lý thẻ mượn
+      <div class="card-header d-flex">
+        <div class="col col-4 ">
+          Danh sách thẻ mượn
+        </div>
+      <form class="d-flex col col-8 "  style="padding-right: 0;"action="/admin/history/search" method="get">
+        <div class="">
+          <label for="dayBegin" class="form-label me-2" style="margin-left: 2rem">Ngày bắt đầu</label>
+          <input type="date" id="dayBegin" name="dayBegin" value="">
+          
+      </div>
+      <div class="">
+          <label for="dayEnd" class="form-label me-2" style="margin-left: 2rem">Ngày kết thúc</label>
+          <input type="date" id="dayEnd" name="dayEnd" style="margin-right: 2rem" value="">
+          
+      </div>
+      <button class="btn btn-primary" type="submit">Lọc</button>
+      </form>
       </div>
       <div class="card-body">
           <div class="baixe admin-content">
@@ -132,6 +158,9 @@
                                       <form action="/admin/rent" method="post">
                                           <td><input type="text" id="idPhieuMuonChiTiet" name="idPhieuMuonChiTiet" style="width:90%"class="form-control"value="<%= history[index].idPhieuMuonChiTiet %>" readonly></td>
                                           <td><input type="text" id="tenSach" name="tenSach" style="width:max-content"class="form-control"value="<%= history[index].tenSach %>" readonly></td>
+                                          <input type="text" id="idSach" name="idSach" style="width:max-content"class="form-control"value="<%= history[index].idSach %>" hidden>
+                                          <input type="text" id="idPhieuMuon" name="idPhieuMuon" style="width:max-content"class="form-control"value="<%= history[index].idPhieuMuon %>" hidden>
+                                          <input type="text" id="soLuong" name="soLuong" style="width:max-content"class="form-control"value="<%= history[index].soLuong %>" hidden>
                                           <td><input type="text" id="viTri" name="viTri" style="width:90%" class="form-control"value="<%= history[index].viTri %>"readonly></td>
                                           <td><input type="text" id="name"  name="name"  class="form-control"value="<%= history[index].name %>"readonly></td> 
                                           <td><input type="text" id="ngayMuon" name="ngayMuon" class="form-control"value="<%= history[index].ngayMuon.getFullYear()%>-<%=history[index].ngayMuon.getMonth()+1%>-<%=history[index].ngayMuon.getDate()%>"readonly></td>

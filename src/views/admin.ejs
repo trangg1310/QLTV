@@ -83,7 +83,50 @@
       </div>
     </div>
 </nav>
-   
+<div class="container" style="margin-top: 30px;">
+  <div>
+      <% if (typeof errors != 'undefined'){
+          %> <% errors.forEach(element =>
+          {%> <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= element.message%>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      <% }) %>
+      <% } %>
+  </div>
+
+  <div>
+      <% if (messages.success_msg) { %>
+          <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+          </div>
+      <% } %>   
+  </div>
+<div class="container col-lg-6 col-sm-12" id="pass">
+  <div class="row">
+      <form  action = "admin/password" style="margin-top: 30px;" method="post">
+          <div style="text-align: center; margin-bottom: 20px;">
+            Đổi mật khẩu
+          </div>
+          <input type="hidden" name="email" id="email" value="<%= process.env.EMAIL_ADMIN %>" required>
+          <div class="input-group" style="margin-bottom: 20px;">
+              <span id="span1" style="width: 4.5cm;" class="input-group-text">Nhập mật khẩu cũ</span>
+              <input type="password" class="form-control border " name="password" id="password" required>
+          </div>
+          <div class="input-group" style="margin-bottom: 20px;">
+              <span id="span2" style="width: 4.5cm;" class="input-group-text">Nhập mật khẩu mới</span>
+              <input type="password" class="form-control border " name="password1" id="password1" required>
+          </div>
+          <div class="input-group" style="margin-bottom: 0.5cm;">
+              <span id="span3" style="width: 4.5cm;" class="input-group-text">Lưu mật khẩu mới</span>
+              <input type="password" class="form-control border " name="password2" id="password2" required>
+          </div>
+          <button type="submit" class=" d-grid gap-2 col-2 mx-auto btn btn-primary ">Lưu</button>
+      </form> 
+      
+  </div>
+</div>
+<br>
 </body>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 

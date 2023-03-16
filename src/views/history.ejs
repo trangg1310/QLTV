@@ -80,7 +80,7 @@ body {
                       <p>ID sách: <%= history[index].idSach %> - Vị trí: <%= history[index].viTri %> </p>
                       <h6>Ngày mượn: <%= history[index].ngayMuon.getFullYear()%>-<%=history[index].ngayMuon.getMonth()+1%>-<%=history[index].ngayMuon.getDate()%></h6>
                       <h6>Ngày hẹn trả: <%= history[index].ngayHenTra.getFullYear()%>-<%=history[index].ngayHenTra.getMonth()+1%>-<%=history[index].ngayHenTra.getDate()%></h6>
-                      <h6>Tiền cọc: <%=history[index].tienCoc %></h6>
+                      <h6>Tiền cọc: <%=history[index].tienCoc/history[index].soLuong %> VND</h6>
                       <h5>Trạng thái: <%=history[index].trangThai %></h5>
                     </div>
                   </div>

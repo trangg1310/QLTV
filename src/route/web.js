@@ -37,6 +37,9 @@ const initWebRoute = (app) => {
     router.get('/admin/book/search', adminController.searchBook);
     router.get('/admin/user/search', adminController.searchUser);
     router.get('/admin/tke', adminController.getAdminTK);
+    router.get('/admin/history/search', adminController.searchRent);
+    router.post('/admin/password', adminController.postPassword)
+
     return app.use('/', router)
 }
 

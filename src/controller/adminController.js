@@ -1,15 +1,15 @@
 import pool from "../config/connectDB";
 import moment from "moment/moment";
+import bcrypt from "bcrypt";
 
-var message = "";
-var error = "";
+let errors = [];
 
 let getAdminPage = async(req, res) => {
     if (req.session.dalogin!==true){
         res.redirect('/login');
     }else{
         if(req.session.email=== process.env.EMAIL_ADMIN);
-        res.render('admin.ejs');
+        res.render('admin.ejs', {errors: errors});
     }
 }
 
@@ -75,7 +75,7 @@ let getAdminRent = async(req, res) => {
         if(req.session.email=== process.env.EMAIL_ADMIN) {
             let [history,fields] = await pool.execute(`SELECT book.tenSach,book.idSach,book.viTri, book.tenTG, book.NXB, book.namXB, book.theLoai,
               chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet,
-              phieumuon.idUser, user.name, chitietphieumuon.ngayTra 
+              phieumuon.idUser, user.name, chitietphieumuon.ngayTra, phieumuon.idPhieuMuon, phieumuon.soLuong
               FROM book, chitietphieumuon, phieumuon, user 
               WHERE book.idSach = chitietphieumuon.idSach 
               AND chitietphieumuon.idPhieuMuon = phieumuon.idPhieuMuon 
@@ -92,13 +92,22 @@ let postAdminRent = async(req, res) => {
         if(req.body.ngayTra==''&& req.body.trangThai=="Đã trả") {
             let curTimeString = moment(new Date().toLocaleString(), "MM/DD/YYYY HH:mm:ss a").format("YYYY-MM-DD");
             await pool.execute(`update chitietphieumuon set ngayTra=?, trangThai=? where idPhieuMuonChiTiet = ?`, [curTimeString, req.body.trangThai, req.body.idPhieuMuonChiTiet]);
+            await pool.execute(`update book set trangThai = ? where idSach = ?`, ["active", req.body.idSach]);
         } else if(req.body.ngayTra!=='' && req.body.trangThai=="Đã trả"){
             await pool.execute(`update chitietphieumuon set ngayTra=?, trangThai=? where idPhieuMuonChiTiet = ?`, [req.body.ngayTra, req.body.trangThai, req.body.idPhieuMuonChiTiet]);
+            await pool.execute(`update book set trangThai = ? where idSach = ?`, ["active", req.body.idSach]);
         } else if(req.body.trangThai=="Chưa trả") {
             await pool.execute(`update chitietphieumuon set ngayTra=?, trangThai=? where idPhieuMuonChiTiet = ?`, ["0000-00-00",req.body.trangThai, req.body.idPhieuMuonChiTiet]);
+            await pool.execute(`update book set trangThai = ? where idSach = ?`, ["available", req.body.idSach]);
         }
     } else if(req.body.action=="delete") {
         await pool.execute(`delete from chitietphieumuon where idPhieuMuonChiTiet = ?`, [req.body.idPhieuMuonChiTiet]);
+        await pool.execute(`update book set trangThai = ? where idSach = ?`, ["active", req.body.idSach]);
+        if(req.body.soLuong=='1') {
+            await pool.execute(`delete from phieumuon where idPhieuMuon = ?`, [req.body.idPhieuMuon]);
+        } else {
+            await pool.execute(`update phieumuon set soLuong = soLuong - 1, tienCoc = tienCoc - 5000 where idPhieuMuon = ?`, [req.body.idPhieuMuon]);
+        }
     }
     res.redirect("/admin/rent"); 
 }
@@ -130,6 +139,63 @@ let getAdminTK = async(req, res) => {
         }
     }
 }
+
+let searchRent = async(req, res) => {
+    console.log(req.query);
+    let tmpdayBegin = new Date(req.query.dayBegin);
+    let tmpdayEnd = new Date(req.query.dayEnd);
+    let curday = new Date();
+    if(req.query.dayBegin =='' && req.query.dayEnd=='') {
+        return res.redirect('/admin/rent');
+    } else if(tmpdayBegin>tmpdayEnd) {
+        req.flash('error', "Ngày bắt đầu phải lớn hơn ngày kết thúc");
+         return res.redirect('/admin/rent');
+    } else if(tmpdayBegin > curday) {
+        req.flash('error', "Ngày bắt đầu phải trước ngày hôm nay");
+        return res.redirect('/admin/rent');
+    }
+    let sql = "SELECT book.tenSach,book.idSach,book.viTri, book.tenTG, book.NXB, book.namXB, book.theLoai,"+
+    "chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet,"+
+    "phieumuon.idUser, user.name, chitietphieumuon.ngayTra "+
+    "FROM book, chitietphieumuon, phieumuon, user "+
+    "WHERE book.idSach = chitietphieumuon.idSach "+
+    "AND chitietphieumuon.idPhieuMuon = phieumuon.idPhieuMuon "+
+    "AND phieumuon.idUser = user.idUser "+
+    "AND phieumuon.ngayMuon BETWEEN '"+ req.query.dayBegin+"' AND '"+ req.query.dayEnd+"'";
+    console.log(sql);
+    let [history, fields] = await pool.execute(sql);
+    res.render("adminRent", {history:history});
+}
+
+let postPassword = async(req, res) => {
+    errors = [];
+    let {email, password, password1, password2} = req.body;
+    if(password1 !== password2){
+        errors.push({message: 'Mật khẩu xác nhận không khớp.'})
+    }
+    if(password.length < 6 || password1.length < 6 || password2.length < 6){
+        errors.push({message: "Mật khẩu cần có ít nhất 6 ký tự."});
+    }
+    if(errors.length > 0){
+        res.redirect('/admin');
+    } else {
+        let results = await pool.query (`select * from user where email = ?`, [email]);
+        let user = results[0];
+        let curPass = user[0].password;
+        let check = bcrypt.compareSync(password, curPass);
+        if(!check){
+            errors.push({message: 'Mật khẩu cũ không đúng.'});
+            res.redirect('/admin');
+        } else {
+            let hashedPassword = await bcrypt.hash(password1, 10);
+            await pool.execute(`update user set password = ? where email=?`, [hashedPassword, email]);
+            req.flash('success_msg', "Thay đổi mật khẩu thành công.");
+            res.redirect('/admin');
+        }
+    }
+
+}
+
 module.exports = {
     getAdminPage,
     getAdminBook,
@@ -142,5 +208,7 @@ module.exports = {
     postAdminRent,
     searchBook,
     searchUser,
-    getAdminTK
+    getAdminTK,
+    searchRent,
+    postPassword
 }

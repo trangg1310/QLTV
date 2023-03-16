@@ -209,7 +209,7 @@ let getHistory = async(req, res) => {
     if(req.session.dalogin==true && req.session.email !== process.env.EMAIL_ADMIN) {
         let [idUser, fields1] = await pool.execute(`select idUser from user where email=?`, [req.session.email]);
         let [history, fields] = await pool.execute(`SELECT book.tenSach,book.idSach,book.viTri, book.tenTG, book.NXB, book.namXB, book.theLoai, 
-        chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet
+        chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet, phieumuon.soLuong
         FROM book, chitietphieumuon, phieumuon
         WHERE book.idSach = chitietphieumuon.idSach
         AND chitietphieumuon.idPhieuMuon = phieumuon.idPhieuMuon
