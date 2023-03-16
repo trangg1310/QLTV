@@ -266,7 +266,7 @@ let delGioHang = async(req, res) => {
 let createPhieuMuon = async(req, res) => {
     console.log(req.body);
     let soLuong = 0;
-    let tienCoc = 5000;
+    let tienCoc = 0;
     errors = [];
     for(let index = 0; index< req.session.giohang.length; index++) {
         soLuong++;
@@ -314,7 +314,7 @@ let createPhieuMuon = async(req, res) => {
 }
 let searchBook = async(req, res) => {
     console.log(req.query);
-    let sql = "SELECT * from book where tenSach LIKE '%"+req.query.book+"%' OR tenSach LIKE '"+req.query.book+"%' OR tenSach LIKE '%"+req.query.book+"'";
+    let sql = "SELECT * from book where tenSach LIKE '%"+req.query.book+"%' OR tenSach LIKE '"+req.query.book+"%' OR tenSach LIKE '%"+req.query.book+"' OR theLoai LIKE '%"+req.query.book+"%' OR theLoai LIKE '"+req.query.book+"%' OR theLoai LIKE '%"+req.query.book+"' OR tenTG LIKE '%"+req.query.book+"%' OR tenTG LIKE '"+req.query.book+"%' OR tenTG LIKE '%"+req.query.book+"'";
     console.log(sql);
     let [book, fields] = await pool.execute(sql);
     return res.render('rent.ejs', {book: book})

@@ -31,31 +31,36 @@ body {
 
 </head>
 <body>
-    <header class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">
-          Library
-        </a>
-        <div class="navbar-nav">
-            <div class="nav-item">
-                <a class="nav-link " href="#">Tài Khoản</a>
-            </div>
-            <div class="nav-item active">
-                <a class="nav-link" href="/user/history">Lịch sử</a>
-            </div>
-            <div class="nav-item">
-                <a class="nav-link" href="/user/book">Thuê Sách</a>
-            </div>
-            <div class="nav-item">
-              <a class="nav-link" href="/user/rent">Phiếu mượn</a>
-          </div>
-            <div class="nav-item text-nowrap">
-                    <a class="nav-link px-3" href="/user/logout">
-                    Đăng xuất
-                    <i class="fas fa-sign-out-alt"></i>
-                    </a>
-            </div>
+  <nav class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Library</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mynavbar">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/user">Tài khoản</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/history">Lịch sử</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/book">Thuê sách</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/rent">Phiếu mượn</a>
+          </li>
+        </ul>
+        <div class="nav-item d-flex">
+            <a class="nav-link px-3" href="/user/logout">
+            Đăng xuất
+            <i class="fas fa-sign-out-alt"></i>
+            </a>
         </div>
-    </header>
+      </div>
+    </div>
+</nav>
   <div class="container">
       <div class="row">
           <div class="col col-12">

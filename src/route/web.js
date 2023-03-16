@@ -32,21 +32,11 @@ const initWebRoute = (app) => {
     router.get('/admin/user', adminController.getAdminUser);
     router.get('/admin/logout', adminController.logOut);
 
-    // router.get('/details/user/:userId', homeController.getDetailPage);
-
-    //router.post('/create-new-user', homeController.createNewUser);
-
-    // router.post('/delete-user', homeController.deleteUser);
-
-    // router.get('/edit-user/:userId', homeController.editUser);
-
-    // router.post('/update-user', homeController.updateUser);
-
-    // router.get('/about', (req, res) => {
-    //     res.send(`I'm zau!`);
-    // })
-
-
+    router.get('/admin/rent', adminController.getAdminRent);
+    router.post('/admin/rent', adminController.postAdminRent);
+    router.get('/admin/book/search', adminController.searchBook);
+    router.get('/admin/user/search', adminController.searchUser);
+    router.get('/admin/tke', adminController.getAdminTK);
     return app.use('/', router)
 }
 

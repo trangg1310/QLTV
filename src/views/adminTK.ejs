@@ -1,0 +1,243 @@
+<%- include('header.ejs') %> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+        display: block;
+    }
+
+    .admin-subcontent {
+        height:500px;
+        overflow-x:auto;
+        overflow-y:auto;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+    header {
+      background-color: white;
+    }
+
+    header a {
+      color: #404386 !important;
+    }
+
+    header img {
+      width: 30px;
+    }
+
+    #sidebarMenu.nav-link {
+      color: white !important; 
+    };
+
+    input{
+    border-radius: 5px;
+    height: 1.1cm;
+    }
+
+    #themsach input {
+        margin-bottom: 1rem;
+    }
+    th, td {
+    text-align: center;
+    }
+
+    #sach input{
+    text-align: center;
+    border-color: transparent;
+    background-color: transparent !important;
+    }
+</style>
+</header>
+<body>
+
+<nav class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+<div class="container-fluid">
+  <a class="navbar-brand" href="#">Library</a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="mynavbar">
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin">Tài khoản</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/book">Quản lý sách</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/user">Quản lý người dùng</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/rent">Quản lý mượn trả</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/tke">Thống kê</a>
+      </li>
+    </ul>
+    <div class="nav-item d-flex">
+        <a class="nav-link px-3" href="/admin/logout">
+        Đăng xuất
+        <i class="fas fa-sign-out-alt"></i>
+        </a>
+    </div>
+  </div>
+</div>
+</nav>
+       
+<!-- Doanh số thư viện  -->
+<div class="col-12 mb-4" id="doanhso" style="margin-top: 30px;">
+    <div class="card shadow">
+        <div class="card-header">
+            Doanh số thư viện
+        </div>
+        <div class="card-body">
+            <label for="begin-date" style="margin-left: 2rem;">Từ ngày:</label>
+            <input type="date" name="begin-date" style="text-align: center;" id="begin-date" onchange="runWhenSelectDate()">
+            <label for="end-date" style="margin-left: 10rem;">Đến ngày:</label>
+            <input type="date" name="end-date" style="text-align: center;" id="end-date" onchange="runWhenSelectDate()">
+            <!-- <button class="btn btn-success" id="select-date" style="margin-left: 8rem">Chọn</button> -->
+
+            <canvas id="myChart" style="padding: 2rem 0;"></canvas>
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript'>
+    const history = <%-JSON.stringify(doanhthu)%>
+    const cur_date = new Date();
+    let cur_d_string = cur_date.getFullYear() + ((cur_date.getMonth() + 1 >= 10) ? '-' : '-0') + (cur_date.getMonth() +1) + ((cur_date.getDate() >= 10) ? '-' : '-0') + cur_date.getDate();
+    const begin_date = document.querySelector("#begin-date");
+    const end_date = document.querySelector("#end-date");
+    // const select_date = document.querySelector("#select-date");
+
+    //ngay ket thuc
+    // const cur_date = new Date();
+    end_date.value = cur_date.getFullYear() + ((cur_date.getMonth() + 1 >= 10) ? '-' : '-0') + (cur_date.getMonth() +1) + ((cur_date.getDate() >= 10) ? '-' : '-0') + cur_date.getDate();
+
+    //ngay bat dau
+    const prev_date = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+    begin_date.value = prev_date.getFullYear() + ((prev_date.getMonth() + 1 >= 10) ? '-' : '-0') + (prev_date.getMonth() +1) + ((prev_date.getDate() >= 10) ? '-' : '-0') + prev_date.getDate();
+    
+    // console.log(doanhthu);
+    let dayArray = [];
+    let index = [];
+    
+    let myChart = new Chart("myChart", {
+        type: 'bar',
+        data: {
+            // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: index,
+            datasets: [{
+                label: 'Doanh số thư viện',
+                data: dayArray,
+                // backgroundColor: [
+                //     'rgba(255, 99, 132, 0.2)',
+                //     'rgba(54, 162, 235, 0.2)',
+                //     'rgba(255, 206, 86, 0.2)',
+                //     'rgba(75, 192, 192, 0.2)',
+                //     'rgba(153, 102, 255, 0.2)',
+                //     'rgba(255, 159, 64, 0.2)'
+                // ],
+                backgroundColor: 'rgba(25, 111, 61 , 0.5)',
+                // borderColor: [
+                //     'rgba(255, 99, 132, 1)',
+                //     'rgba(54, 162, 235, 1)',
+                //     'rgba(255, 206, 86, 1)',
+                //     'rgba(75, 192, 192, 1)',
+                //     'rgba(153, 102, 255, 1)',
+                //     'rgba(255, 159, 64, 1)'
+                // ],
+                borderColor: 'rgba(25, 111, 61, 0.5)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'VNĐ'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+            
+        }
+    });
+
+    const runWhenSelectDate = function() {
+        let tempBegin = new Date(begin_date.value);
+        let tempEnd = new Date(end_date.value);
+        console.log(tempBegin);
+        dayArray = []; 
+        index = [];
+        
+        if(tempBegin > tempEnd) {
+            Toastify({
+                text: "Ngày bắt đầu phải trước ngày kết thúc",
+                position: "center",
+                style: {
+                    background: "#198754"
+                },
+                duration: 5000,
+                close: true
+            }).showToast();
+            return;
+        }
+        let temp = [];
+        for(let i = 0; i < history.length; i++) {
+            console.log(history[i].ngayMuon)
+            let d = new Date(history[i].ngayMuon);
+            temp.push( d.getFullYear() + ((d.getMonth() + 1 >= 10) ? ('-' + (d.getMonth() + 1)) : ('-0' + (d.getMonth() + 1))) + ((d.getDate() >= 10) ? ('-' + d.getDate()) : ('-0' + d.getDate())));
+        }
+        // console.log(temp);
+        for(let d = tempBegin; d <= tempEnd; d.setDate(d.getDate() + 1)) {
+            
+            let d_string = d.getFullYear() + ((d.getMonth() + 1 >= 10) ? '-' : '-0') + (d.getMonth() +1) + ((d.getDate() >= 10) ? '-' : '-0') + d.getDate();
+            index.push(((d.getDate() >= 10) ? '' : '0') + d.getDate() + ((d.getMonth() + 1 >= 10) ? '-' : '-0') + (d.getMonth() +1) + '-' + d.getFullYear());
+            
+            if(temp.includes(d_string)) {
+                dayArray.push(Number(history[temp.indexOf(d_string)].tienCoc));
+            } else {
+                dayArray.push(0);
+            }
+        }
+        // console.log("Mảng lưu doanh số",dayArray);
+        // console.log("Mảng lưu ngày", index);
+
+        myChart.data.labels = index;
+        myChart.data.datasets[0].data = dayArray;
+
+        myChart.update();
+
+        
+    }
+    
+    //Gọi 1 lần khi load trang
+    runWhenSelectDate();
+
+    // select_date.addEventListener('click', runWhenSelectDate);
+</script>
+</body>

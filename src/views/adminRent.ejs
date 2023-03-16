@@ -1,0 +1,176 @@
+<%- include('header.ejs') %> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+        html {
+          scroll-behavior: smooth;
+        }
+        body {
+            display: block;
+        }
+
+        .admin-subcontent {
+            height:500px;
+            overflow-x:auto;
+            overflow-y:auto;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+        header {
+          background-color: white;
+        }
+
+        header a {
+          color: #404386 !important;
+        }
+
+        header img {
+          width: 30px;
+        }
+
+        #sidebarMenu.nav-link {
+          color: white !important; 
+        };
+
+        input{
+        border-radius: 5px;
+        height: 1.1cm;
+        }
+
+        #themsach input {
+            margin-bottom: 1rem;
+        }
+        th, td {
+        text-align: center;
+        }
+
+        #sach input{
+        text-align: center;
+        border-color: transparent;
+        background-color: transparent !important;
+        }
+    </style>
+</header>
+<body>
+
+  <nav class="navbar fixed-top flex-md-nowrap p-2 navbar-expand-sm shadow bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Library</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mynavbar">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin">Tài khoản</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/book">Quản lý sách</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/user">Quản lý người dùng</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/rent">Quản lý mượn trả</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/tke">Thống kê</a>
+          </li>
+        </ul>
+        <div class="nav-item d-flex">
+            <a class="nav-link px-3" href="/admin/logout">
+            Đăng xuất
+            <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+      </div>
+    </div>
+</nav>
+   
+<div class="col-12 mb-4" id="sach" style="margin-top: 30px;">
+  <div class="card shadow">
+      <div class="card-header">
+          Quản lý thẻ mượn
+      </div>
+      <div class="card-body">
+          <div class="baixe admin-content">
+              <% if (history.length === 0) { %>
+                  <p>Không có thẻ mượn nào</p>
+              <% } else { %>
+                  <div class="admin-subcontent table-responsive">
+                      <table class="table table-striped table-sm" id="table-bai-xe">
+                          <thead>
+                              <tr>
+                                  <th scope="col">ID thẻ mượn</th>
+                                  <th scope="col">Tên sách</th>
+                                  <th scope="col">Vị trí</th>
+                                  <th scope="col">Tên người dùng</th>
+                                  <th scope="col">Ngày mượn</th>
+                                  <th scope="col">Ngày hẹn trả</th>
+                                  <th scope="col">Ngày trả</th>
+                                  <th scope="col">Trạng thái</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <% for( let index = history.length - 1; index >= 0; index-- ) { %>
+                                  <tr>
+                                      <form action="/admin/rent" method="post">
+                                          <td><input type="text" id="idPhieuMuonChiTiet" name="idPhieuMuonChiTiet" style="width:90%"class="form-control"value="<%= history[index].idPhieuMuonChiTiet %>" readonly></td>
+                                          <td><input type="text" id="tenSach" name="tenSach" style="width:max-content"class="form-control"value="<%= history[index].tenSach %>" readonly></td>
+                                          <td><input type="text" id="viTri" name="viTri" style="width:90%" class="form-control"value="<%= history[index].viTri %>"readonly></td>
+                                          <td><input type="text" id="name"  name="name"  class="form-control"value="<%= history[index].name %>"readonly></td> 
+                                          <td><input type="text" id="ngayMuon" name="ngayMuon" class="form-control"value="<%= history[index].ngayMuon.getFullYear()%>-<%=history[index].ngayMuon.getMonth()+1%>-<%=history[index].ngayMuon.getDate()%>"readonly></td>
+                                          <td><input type="text" id="ngayHenTra" name="ngayHenTra"class="form-control" value="<%= history[index].ngayHenTra.getFullYear()%>-<%=history[index].ngayHenTra.getMonth()+1%>-<%=history[index].ngayHenTra.getDate()%>"readonly></td>
+                                          
+                                          <% if(history[index].ngayTra!==null) {%>
+                                          <td><input type="date" id="ngayTra" name="ngayTra" class="form-control"value="<%=history[index].ngayTra.getFullYear() + ((history[index].ngayTra.getMonth() + 1 >= 10) ? '-' : '-0') + (history[index].ngayTra.getMonth() +1) + ((history[index].ngayTra.getDate() >= 10) ? '-' : '-0') + history[index].ngayTra.getDate()%>"></td>
+                                          <% } else { %>
+                                            <td><input type="date" id="ngayTra" name="ngayTra" class="form-control"value=""></td>
+                                          <% } %>
+                                          <!--<td><input type="text" id="trangThai" style="width:max-content"name="trangThai" class="form-control" value="<%= history[index].trangThai %>"></td>-->
+                                          <td>
+                                            <select name="trangThai" style="background-color: transparent; border: none; padding: 8px 0px;" id="trangThai">
+                                                <% if (history[index].trangThai === "Chưa trả") { %>
+                                                    <option value="Chưa trả" selected>Chưa trả</option>
+                                                    <option value="Đã trả">Đã trả</option>
+                                                <% } else if (history[index].trangThai === "Đã trả") {%>
+                                                    <option value="Chưa trả">Chưa trả</option>
+                                                    <option value="Đã trả" selected>Đã trả</option>
+                                                <% } %>
+                                            </select>
+                                        </td>
+                                          <td><button type="submit" name="action" class="btn btn-primary" class="form-control" value="update"><span class="text-gradient"><i class="fas fa-pencil-alt"></i></span></button></td>
+                                          <td><button type="submit" name="action" class="btn btn-danger" class="form-control" value="delete"><span class="text-gradient"><i class="fas fa-times"></i></span></button></td>
+                                      </form>
+                                  </tr>
+                              <% } %>
+                          </tbody>
+                      </table>
+                  </div>
+              <% } %>
+          </div>
+      </div>
+  </div>
+</div>
+
+</body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script> 
+
+
+</script>
