@@ -103,7 +103,18 @@
 
         <!-- Danh sách user -->
         <div class="col-12 mb-4" id="sach" style="margin-top: 30px;">
-            <div class="card shadow">
+            <% if (messages.success_msg) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert"><%= messages.success_msg %> 
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <% } %>
+              
+              <% if (messages.error) { %>
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert"><%= messages.error %> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+              <% } %>
+            <div class="card shadow" style="height: 90vh;">
                 <div class="card-header">
                     <div class="row"> 
                         <div class="col col-4">
@@ -139,7 +150,7 @@
                                                 <form action="/admin/user" method="post">
                                                     <td><input type="text" id="idUser" name="idUser" class="form-control" style="width:90%"value="<%= user[index].idUser %>" readonly></td>
                                                     <td><input type="text" id="name" name="name" class="form-control" style="width:max-content"value="<%= user[index].name %>" ></td>
-                                                    <td><input type="text" id="email" name="email" class="form-control" style="width:max-content" value="<%= user[index].email %>"></td>
+                                                    <td><input type="text" id="email" name="email" class="form-control" style="width:max-content" value="<%= user[index].email %> "readonly></td>
                                                     <td><input type="text" id="address" name="address"class="form-control"style="width:max-content" value="<%= user[index].address %>"></td>
                                                     <td><input type="text" id="phoneNumber" name="phoneNumber" class="form-control" style="width:max-content"value="<%= user[index].phoneNumber %>" ></td>
                                                     <!-- <td><input type="text" id="gender"  name="gender" class="form-control" value="<%= user[index].gender %>"></td> -->

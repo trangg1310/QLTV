@@ -123,21 +123,21 @@ input{
                                     <% for( let index = 0; index < book.length; index++ ) { %>
                                         <tr>
                                             <form action="/user/rent" method="post">
-                                                <td><input type="text" id="idSach" name="idSach" style="width:90%"value="<%= book[index].idSach %>"></td>
-                                                <td><input type="text" id="viTri" name="viTri" style="width:90%"value="<%= book[index].viTri %>" ></td>
-                                                <td><input type="text" id="tenSach" name="tenSach" style="width:max-content" value="<%= book[index].tenSach %>"></td>
-                                                <td><input type="text" id="tenTG" name="tenTG" style="width:max-content" value="<%= book[index].tenTG %>"></td>
-                                                <td><input type="text" id="NXB" name="NXB" style="width:max-content"value="<%= book[index].NXB %>" ></td>
-                                                <td><input type="text" id="namXB"  name="namXB" style="width:90%" value="<%= book[index].namXB %>"></td>
-                                                <td><input type="text" id="theLoai" style="width:max-content"name="theLoai" value="<%= book[index].theLoai %>"></td>
+                                                <td><input type="text" id="idSach" name="idSach" style="width:90%"value="<%= book[index].idSach %>" readonly></td>
+                                                <td><input type="text" id="viTri" name="viTri" style="width:90%"value="<%= book[index].viTri %>" readonly></td>
+                                                <td><input type="text" id="tenSach" name="tenSach" style="width:max-content" value="<%= book[index].tenSach %>"readonly></td>
+                                                <td><input type="text" id="tenTG" name="tenTG" style="width:max-content" value="<%= book[index].tenTG %>"readonly></td>
+                                                <td><input type="text" id="NXB" name="NXB" style="width:max-content"value="<%= book[index].NXB %>" readonly></td>
+                                                <td><input type="text" id="namXB"  name="namXB" style="width:100%" value="<%= book[index].namXB %>"readonly></td>
+                                                <td><input type="text" id="theLoai" style="width:max-content"name="theLoai" value="<%= book[index].theLoai %>"readonly></td>
                                                 <% if(book[index].trangThai === "available") {%>
-                                                <td><input type="text" id="trangThai" name="trangThai" value="Không thể mượn"></td>
+                                                <td><input type="text" id="trangThai" name="trangThai" value="Không thể mượn"readonly></td>
                                                 <% } else %>
                                                 <% if(book[index].trangThai === "active") {%>
-                                                    <td><input type="text" id="trangThai" name="trangThai" value="Có thể mượn"></td>
+                                                    <td><input type="text" id="trangThai" name="trangThai" value="Có thể mượn"readonly></td>
                                                 <% } %>
-                                                <td><input type="text" id="giaBia" name="giaBia"  value="<%= book[index].giaBia %>"></td>
-                                                <td><button type="submit" class="btn btn-primary" class="form-control"><span class="text-gradient"><i class="fas fa-pencil-alt"></i></span></button></td>
+                                                <td><input type="text" id="giaBia" name="giaBia"  style="width:100%" value="<%= book[index].giaBia %>"readonly></td>
+                                                <td><button type="submit" class="btn btn-primary" class="form-control"><span class="text-gradient"><i class="bi bi-cart-plus"></i></span></button></td>
                                             </form>
                                         </tr>
                                     <% } %>

@@ -97,7 +97,7 @@ input{
               <% if (book.length === 0) { %>
                 <div class="card">
                   <div class="card-body">
-                    <h1 style="color:#007bff">Không có quyển sách nào trong giỏ hàng</h1>
+                    <h1 style="color:#007bff">Không có quyển sách nào trong phiếu mượn</h1>
                   </div>
                 </div>
               <% } else { %>
@@ -111,9 +111,10 @@ input{
                             <p>Nhà xuất bản: <input type="text" id="NXB" name="NXB" value="<%= book[index].NXB %>" hidden><%= book[index].NXB %>
                                 <br>Năm xuất bản: <input type="text" id="namXB" name="namXB" value="<%= book[index].namXB %>" hidden><%= book[index].namXB %></p>
                             <p>ID sách: <input type="text" id="idSach" name="idSach" value="<%= book[index].idSach %>" hidden><%= book[index].idSach %>
+                              <input type="text" id="trangThai" name="trangThai" value="book[index].trangThai"hidden>
                                 <br>Vị trí: <input type="text" id="viTri" name="viTri" value="<%= book[index].viTri %>" hidden><%= book[index].viTri %> </p>
                             <h6>Giá bìa: <input type="text" id="giaBia" name="giaBia" value="<%= book[index].giaBia %>" hidden><%= book[index].giaBia %> VNĐ</h3>
-                            <button class="btn-md btn btn-outline-secondary" type="submit">Xóa khỏi giỏ hàng</button>
+                            <button class="btn-md btn btn-outline-secondary" type="submit">Xóa khỏi phiếu mượn</button>
                         </form>
                     </div>
                   </div>

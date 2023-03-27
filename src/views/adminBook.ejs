@@ -181,14 +181,14 @@
                 </div>
                 <div class="card-body">
                     <form action="/admin/themsach" method="post">
-                        <input type="text" name="viTri" class="form-control" placeholder="Vị Trí">
-                        <input type="text" name="tenSach" class="form-control" placeholder="Tên sách">
-                        <input type="text" name="tenTG" class="form-control" placeholder="Tên tác giả">
-                        <input type="text" name="namXB" class="form-control" placeholder="Năm xuất bản ">
-                        <input type="text" name="NXB" class="form-control" placeholder="NXB">
-                        <input type="text" name="theLoai" class="form-control" placeholder="Thể loại">
+                        <input type="text" name="viTri" class="form-control" placeholder="Vị Trí" required>
+                        <input type="text" name="tenSach" class="form-control" placeholder="Tên sách" required>
+                        <input type="text" name="tenTG" class="form-control" placeholder="Tên tác giả" required>
+                        <input type="text" name="namXB" class="form-control" placeholder="Năm xuất bản " required>
+                        <input type="text" name="NXB" class="form-control" placeholder="NXB" required>
+                        <input type="text" name="theLoai" class="form-control" placeholder="Thể loại" required>
                         <input type="text" name="trangThai" class="form-control" placeholder="Trạng thái" value="active" hidden>
-                        <input type="text" name="giaBia" class="form-control" placeholder="Giá bìa">
+                        <input type="text" name="giaBia" class="form-control" placeholder="Giá bìa" required>
                         <button type="submit" class="btn btn-primary">Thêm sách</button>
                         
                     </form>

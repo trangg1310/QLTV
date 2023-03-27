@@ -37,7 +37,12 @@ let postBook = async(req, res) => {
         [viTri,tenSach,tenTG,namXB,NXB,theLoai,trangThai,giaBia,idSach]);
         return res.redirect('/admin/book');
     } else if(req.body.action =='delete') {
-        await pool.execute('delete from book where idSach=?', [req.body.idSach]);
+        try {
+            await pool.execute('delete from book where idSach=?', [req.body.idSach]);
+        } catch (error) {
+            req.flash('error', "Có lỗi khi xóa quyển sách này!");
+        }
+       
         return res.redirect('/admin/book')
     }
 }
@@ -55,10 +60,21 @@ let postAdminUser = async(req, res) => {
     if(req.body.action == 'update') {
         let {idUser, name, email, address, phoneNumber, gender, cmnd} = req.body;
         console.log(req.body);
-        await pool.execute('update user set name = ?, address = ?, phoneNumber = ?, gender = ?, cmnd = ? where idUser = ?', 
+        try {
+            await pool.execute('update user set name = ?, email=?, address = ?, phoneNumber = ?, gender = ?, cmnd = ? where idUser = ?', 
         [name, email, address, phoneNumber, gender, cmnd, idUser]);
+        } catch (error) {
+            req.flash('error', "Có lỗi khi chỉnh sửa thông tin người dùng này!");
+        }
+        res.redirect('/admin/user');
     } else if(req.body.action=='delete') {
-        await pool.execute('delete from user where idUser = ?', [req.body.idUser]);
+        try {
+            await pool.execute('delete from user where idUser = ?', [req.body.idUser]);
+        } catch (error) {
+            req.flash('error', "Có lỗi khi xóa người dùng này!");
+        }
+        
+        res.redirect('/admin/user');
     }
 }
 
@@ -196,6 +212,33 @@ let postPassword = async(req, res) => {
 
 }
 
+let searchHistoryUser = async (req, res) => {
+    if(req.query.user !='') {
+        let sql = "SELECT DISTINCT book.tenSach,book.idSach,book.viTri, book.tenTG, book.NXB, book.namXB, book.theLoai,"+
+        "chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet,"+
+        "phieumuon.idUser, user.name, chitietphieumuon.ngayTra "+
+        "FROM book, chitietphieumuon, phieumuon, user "+
+        "WHERE book.idSach = chitietphieumuon.idSach "+
+        "AND chitietphieumuon.idPhieuMuon = phieumuon.idPhieuMuon "+
+        "AND phieumuon.idUser = user.idUser "+
+        "AND user.email = '"+ req.query.user+"'";
+        console.log(sql);
+        let [history, fields] = await pool.execute(sql);
+        res.render("adminRent", {history:history});
+    } else {
+        let sql = "SELECT DISTINCT book.tenSach,book.idSach,book.viTri, book.tenTG, book.NXB, book.namXB, book.theLoai,"+
+        "chitietphieumuon.trangThai, phieumuon.ngayMuon, phieumuon.ngayHenTra, phieumuon.tienCoc, chitietphieumuon.idPhieuMuonChiTiet,"+
+        "phieumuon.idUser, user.name, chitietphieumuon.ngayTra "+
+        "FROM book, chitietphieumuon, phieumuon, user "+
+        "WHERE book.idSach = chitietphieumuon.idSach "+
+        "AND chitietphieumuon.idPhieuMuon = phieumuon.idPhieuMuon "+
+        "AND phieumuon.idUser = user.idUser ";
+        console.log(sql);
+        let [history, fields] = await pool.execute(sql);
+        res.render("adminRent", {history:history});
+    }
+}
+
 module.exports = {
     getAdminPage,
     getAdminBook,
@@ -210,5 +253,6 @@ module.exports = {
     searchUser,
     getAdminTK,
     searchRent,
-    postPassword
+    postPassword,
+    searchHistoryUser
 }

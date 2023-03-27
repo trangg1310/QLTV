@@ -276,7 +276,9 @@ let createPhieuMuon = async(req, res) => {
     let ngayHenTra = req.body.ngayHenTra;
     let tmpNgayMuon = new Date(ngayMuon);
     let tmpNgayHenTra = new Date(ngayHenTra);
-    let curTime = new Date();
+    let tmpcurTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    let curTime = new Date(tmpcurTime);
+    console.log(curTime);
     if(soLuong==0) {
         //req.flash('error', "Không có quyển sách nào trong giỏ hàng!");
         errors.push({message: "Không có quyển sách nào trong giỏ hàng!"})
@@ -291,6 +293,9 @@ let createPhieuMuon = async(req, res) => {
     } else 
     if(curTime> tmpNgayMuon) {
         errors.push({message: "Ngày mượn không thể trước ngày hôm nay!"});
+    } else
+    if(req.body.trangThai==="available") {
+        errors.push({message: "Có quyển sách không thể mượn trong phiếu mượn!"});
     }
     if(errors.length>0) {
         res.redirect('/user/rent');

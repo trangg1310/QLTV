@@ -30,6 +30,7 @@ const initWebRoute = (app) => {
     router.post('/admin/themsach', adminController.createBook);
     router.post('/admin/book', adminController.postBook);
     router.get('/admin/user', adminController.getAdminUser);
+    router.post('/admin/user', adminController.postAdminUser);
     router.get('/admin/logout', adminController.logOut);
 
     router.get('/admin/rent', adminController.getAdminRent);
@@ -39,6 +40,7 @@ const initWebRoute = (app) => {
     router.get('/admin/tke', adminController.getAdminTK);
     router.get('/admin/history/search', adminController.searchRent);
     router.post('/admin/password', adminController.postPassword)
+    router.get('/admin/history/search/user', adminController.searchHistoryUser);
 
     return app.use('/', router)
 }
